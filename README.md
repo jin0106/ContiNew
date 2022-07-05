@@ -143,8 +143,6 @@
 
 #### 소감
 
-[ERD](https://cdn.discordapp.com/attachments/962869113766707270/982186583476301894/unknown.png)
-
 - 우동진(팀원 / Frontend)
 
   - 구현 파트 : 매물 검색(지도 및 필터링 구현), 매물 올리기 및 수정, 매물 상세보기 페이지 UI 및 API 구현
