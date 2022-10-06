@@ -10,7 +10,6 @@ interface Map extends MapRefType {
 	searchCondition: never;
 }
 function Map({ kakaoMap, searchCondition }: Map) {
-	const [mapLoaded, setMapLoaded] = useState<boolean>(false);
 	const [loadMap, setLoadMap] = useState(false);
 	const dispatch = useDispatch();
 	const cluster = useRef<kakao.maps.MarkerClusterer>();
@@ -40,15 +39,6 @@ function Map({ kakaoMap, searchCondition }: Map) {
 	};
 
 	useEffect(() => {
-		const $script = document.createElement("script");
-		$script.async = true;
-		$script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}&autoload=false&libraries=services,clusterer,drawing`;
-		$script.addEventListener("load", () => setMapLoaded(true));
-		document.head.appendChild($script);
-	}, []);
-
-	useEffect(() => {
-		if (!mapLoaded) return;
 		kakao.maps.load(() => {
 			const container = document.getElementById("map") as HTMLElement;
 			const options = {
@@ -61,7 +51,7 @@ function Map({ kakaoMap, searchCondition }: Map) {
 			kakao.maps.event.addListener(kakaoMap.current, "idle", setCoodinate);
 			setLoadMap(true);
 		});
-	}, [mapLoaded]);
+	}, []);
 
 	useEffect(() => {
 		if (!loadMap) return;
