@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { convertURLtoFile } from "@utils/convertURLtoFile";
+import { useEffect, useState } from "react";
 import { EventProps } from "src/pages/createSale";
 import styled from "styled-components";
 import { SmallContainer } from "../Container";
@@ -14,9 +15,13 @@ interface DivProps {
 	hide?: boolean;
 }
 
-function Photos({ houseInfo, setHouseInfo }: EventProps) {
+function Photos({ houseInfo, setHouseInfo, articleId }: EventProps) {
 	const [uploadImgs, setUploadImgs] = useState<FileList | null>(null);
 	const [previewImgs, setPreviewImgs] = useState<string[]>([]);
+
+	useEffect(() => {
+		if (houseInfo.images && articleId) setPreviewImgs(houseInfo.images as string[]);
+	}, [articleId]);
 
 	const setUploadImages = (imgs: FileList) => {
 		uploadImgs ? setUploadImgs({ ...uploadImgs, ...imgs }) : setUploadImgs(imgs);
@@ -24,7 +29,7 @@ function Photos({ houseInfo, setHouseInfo }: EventProps) {
 
 	const addMoreImage = (imgs: FileList) => {
 		const dataTransfer = new DataTransfer();
-		const img = [...Array.from(houseInfo.images!), ...Array.from(imgs)];
+		const img = [...Array.from(houseInfo.images as FileList), ...Array.from(imgs)];
 		img.forEach((file) => dataTransfer.items.add(file));
 		setHouseInfo({ ...houseInfo, images: dataTransfer.files });
 	};
@@ -37,12 +42,9 @@ function Photos({ houseInfo, setHouseInfo }: EventProps) {
 
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const selectedImages = e.target.files!;
-
 		setUploadImages(selectedImages);
-
-		if (houseInfo.images) addMoreImage(selectedImages);
+		if (!articleId && houseInfo.images) addMoreImage(selectedImages);
 		else setHouseInfo({ ...houseInfo, images: selectedImages });
-
 		const imgs = sliceByTen(selectedImages);
 		setPreviewImgs([...previewImgs, ...imgs]);
 	};
@@ -54,15 +56,26 @@ function Photos({ houseInfo, setHouseInfo }: EventProps) {
 
 	const sliceImgFile = (idx: number): FileList => {
 		const dataTransfer = new DataTransfer();
-		const img = Array.from(houseInfo.images!);
+		const img = Array.from(houseInfo.images as FileList);
 		img.splice(idx, 1);
 		img.forEach((file) => dataTransfer.items.add(file));
 		return dataTransfer.files;
 	};
 
+	const sliceImgFileModifyMode = (idx: number): FileList => {
+		const dataTransfer = new DataTransfer();
+		const img = Array.from(houseInfo.images as string[]);
+		const newImg = img.map(async (file) => await convertURLtoFile(file));
+		newImg.splice(idx, 1);
+		newImg.forEach(async (file) => dataTransfer.items.add(await file));
+		return dataTransfer.files;
+	};
+
 	const DeletePhoto = (idx: number) => {
 		slicePreviewImg(idx);
-		const newImg = sliceImgFile(idx);
+		let newImg;
+		if (articleId) newImg = sliceImgFileModifyMode(idx);
+		else newImg = sliceImgFile(idx);
 		setHouseInfo({ ...houseInfo, images: newImg });
 	};
 
