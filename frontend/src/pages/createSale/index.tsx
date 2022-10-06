@@ -25,7 +25,7 @@ interface ButtonProps {
 export interface EventProps {
 	changeEvent: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	houseInfo: HouseInfo;
-	setHouseInfo?: React.Dispatch<React.SetStateAction<HouseInfo>>;
+	setHouseInfo: React.Dispatch<React.SetStateAction<HouseInfo>>;
 	articleId?: number;
 }
 
@@ -63,18 +63,16 @@ function index() {
 		longitude: 0,
 		agreement: "",
 	});
+	const setData = async () => {
+		if (router.query.id) {
+			const data = await getArticleData(+router.query.id as number);
+			setHouseInfo(snakeToCamel(data, "modified") as HouseInfo);
+		}
+	};
 
 	useEffect(() => {
-		const setData = async () => {
-			if (router.query.id) {
-				const data = await getArticleData(+router.query.id as number);
-				setHouseInfo(snakeToCamel(data, "modified") as HouseInfo);
-				console.log(data);
-			}
-		};
-
 		setData();
-	}, []);
+	}, [router.query.id]);
 
 	const handleOptions = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const idx = houseInfo.options.indexOf(+e.target.value);
@@ -114,6 +112,7 @@ function index() {
 
 	const editSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
 		e.preventDefault();
+		console.log(houseInfo.images);
 		if (checkData(houseInfo) && houseInfo.agreement === "agree") {
 			if (router.query.id) {
 				const res = await articleApi.editArticle(createFormData(houseInfo), +router.query.id);
@@ -128,9 +127,17 @@ function index() {
 				<title>매물 등록</title>
 			</Head>
 			<Container>
-				<SaleInfo houseInfo={houseInfo} changeEvent={handleHouseInfo} />
-				<PriceInfo houseInfo={houseInfo} changeEvent={handleHouseInfo} />
-				<OptionInfo houseInfo={houseInfo} changeEvent={handleHouseInfo} />
+				<SaleInfo houseInfo={houseInfo} changeEvent={handleHouseInfo} setHouseInfo={setHouseInfo} />
+				<PriceInfo
+					houseInfo={houseInfo}
+					changeEvent={handleHouseInfo}
+					setHouseInfo={setHouseInfo}
+				/>
+				<OptionInfo
+					houseInfo={houseInfo}
+					changeEvent={handleHouseInfo}
+					setHouseInfo={setHouseInfo}
+				/>
 				<LocationInfo
 					houseInfo={houseInfo}
 					changeEvent={handleHouseInfo}
