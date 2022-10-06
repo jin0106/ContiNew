@@ -63,15 +63,13 @@ function index() {
 		longitude: 0,
 		agreement: "",
 	});
-	const setData = async () => {
-		if (router.query.id) {
-			const data = await getArticleData(+router.query.id as number);
-			setHouseInfo(snakeToCamel(data, "modified") as HouseInfo);
-		}
+	const setData = async (id: number) => {
+		const data = await getArticleData(id);
+		setHouseInfo(snakeToCamel(data, "modified") as HouseInfo);
 	};
 
 	useEffect(() => {
-		setData();
+		if (router.query.id) setData(+router.query.id);
 	}, [router.query.id]);
 
 	const handleOptions = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,11 +111,9 @@ function index() {
 	const editSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 		console.log(houseInfo.images);
-		if (checkData(houseInfo) && houseInfo.agreement === "agree") {
-			if (router.query.id) {
-				const res = await articleApi.editArticle(createFormData(houseInfo), +router.query.id);
-				if (res.status === 204) window.location.replace(`/article/${router.query.id}`);
-			}
+		if (checkData(houseInfo) && houseInfo.agreement === "agree" && router.query.id) {
+			const res = await articleApi.editArticle(createFormData(houseInfo), +router.query.id);
+			if (res.status === 204) window.location.replace(`/article/${router.query.id}`);
 		}
 	};
 

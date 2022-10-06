@@ -24,7 +24,9 @@ function createFormData(houseInfo: HouseInfo) {
 	};
 	formData.append("house", new Blob([JSON.stringify(article)], { type: "application/json" })),
 		houseInfo.images !== null
-			? Array.from(houseInfo.images).forEach((file) => formData.append("images", file))
+			? Array.from(houseInfo.images as FileList).forEach(
+					(file, idx) => idx < 10 && formData.append("images", file),
+			  )
 			: formData.append("images", new Blob([]));
 	return formData;
 }
