@@ -32,7 +32,7 @@ function Photos({ houseInfo, setHouseInfo }: EventProps) {
 	const sliceByTen = (imgs: FileList) => {
 		const newImgs: string[] = [];
 		[...imgs].forEach((img) => newImgs.push(URL.createObjectURL(img)));
-		return newImgs.splice(0, 9);
+		return newImgs.splice(0, 10);
 	};
 
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
