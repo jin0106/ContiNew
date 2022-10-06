@@ -1,6 +1,4 @@
-import { convertURLtoFile } from "@utils/convertURLtoFile";
-import { useEffect, useState } from "react";
-import { articleApi } from "src/api";
+import { useState } from "react";
 import { EventProps } from "src/pages/createSale";
 import styled from "styled-components";
 import { SmallContainer } from "../Container";
@@ -16,48 +14,56 @@ interface DivProps {
 	hide?: boolean;
 }
 
-function Photos({ houseInfo, changeEvent, setHouseInfo, articleId }: EventProps) {
+function Photos({ houseInfo, setHouseInfo }: EventProps) {
 	const [uploadImgs, setUploadImgs] = useState<FileList | null>(null);
 	const [previewImgs, setPreviewImgs] = useState<string[]>([]);
 
+	const setUploadImages = (imgs: FileList) => {
+		uploadImgs ? setUploadImgs({ ...uploadImgs, ...imgs }) : setUploadImgs(imgs);
+	};
+
+	const addMoreImage = (imgs: FileList) => {
+		const dataTransfer = new DataTransfer();
+		const img = [...Array.from(houseInfo.images!), ...Array.from(imgs)];
+		img.forEach((file) => dataTransfer.items.add(file));
+		setHouseInfo({ ...houseInfo, images: dataTransfer.files });
+	};
+
+	const sliceByTen = (imgs: FileList) => {
+		const newImgs: string[] = [];
+		[...imgs].forEach((img) => newImgs.push(URL.createObjectURL(img)));
+		return newImgs.splice(0, 9);
+	};
+
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const selectedImages = e.target.files;
-		if (setHouseInfo) {
-			if (uploadImgs) {
-				setUploadImgs({ ...uploadImgs, ...selectedImages });
-			} else {
-				setUploadImgs(selectedImages);
-			}
+		const selectedImages = e.target.files!;
 
-			if (houseInfo.images && selectedImages) {
-				const dataTransfer = new DataTransfer();
-				const img = [...Array.from(houseInfo.images), ...Array.from(selectedImages)];
-				img.forEach((file) => dataTransfer.items.add(file));
-				setHouseInfo({ ...houseInfo, images: dataTransfer.files });
-			} else {
-				setHouseInfo({ ...houseInfo, images: selectedImages });
-			}
+		setUploadImages(selectedImages);
 
-			const imgs: string[] = [];
-			if (selectedImages) {
-				[...selectedImages].forEach((img) => imgs.push(URL.createObjectURL(img)));
-				if (imgs.length > 10) imgs.splice(0, 9);
-				setPreviewImgs([...previewImgs, ...imgs]);
-			}
-		}
+		if (houseInfo.images) addMoreImage(selectedImages);
+		else setHouseInfo({ ...houseInfo, images: selectedImages });
+
+		const imgs = sliceByTen(selectedImages);
+		setPreviewImgs([...previewImgs, ...imgs]);
+	};
+
+	const slicePreviewImg = (idx: number) => {
+		previewImgs.splice(idx, 1);
+		setPreviewImgs([...previewImgs]);
+	};
+
+	const sliceImgFile = (idx: number): FileList => {
+		const dataTransfer = new DataTransfer();
+		const img = Array.from(houseInfo.images!);
+		img.splice(idx, 1);
+		img.forEach((file) => dataTransfer.items.add(file));
+		return dataTransfer.files;
 	};
 
 	const DeletePhoto = (idx: number) => {
-		if (setHouseInfo && houseInfo.images) {
-			previewImgs.splice(idx, 1);
-			setPreviewImgs([...previewImgs]);
-			const dataTransfer = new DataTransfer();
-			const img = Array.from(houseInfo.images);
-			console.log(img);
-			img.splice(idx, 1);
-			img.forEach((file) => dataTransfer.items.add(file));
-			setHouseInfo({ ...houseInfo, images: dataTransfer.files });
-		}
+		slicePreviewImg(idx);
+		const newImg = sliceImgFile(idx);
+		setHouseInfo({ ...houseInfo, images: newImg });
 	};
 
 	return (
