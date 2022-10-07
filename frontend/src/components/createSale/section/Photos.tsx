@@ -86,14 +86,12 @@ function Photos({ houseInfo, setHouseInfo, articleId }: EventProps) {
 				<Text>- 사진 용량은 최대 100MB까지 가능합니다.</Text>
 				<Text>- 사진은 가로로 찍은 사진을 권장합니다.</Text>
 			</Container>
-			<Container height={32} background={true} grid={true}>
+			<Container background={true} grid={true}>
 				{previewImgs.length > 0 &&
 					previewImgs.map((img, idx) => (
 						<PhotoDiv key={idx + 100}>
 							<PreviewImg src={img} alt="" />
-							<DeleteButton key={idx} onClick={() => DeletePhoto(idx)}>
-								X
-							</DeleteButton>
+							<DeleteButton onClick={() => DeletePhoto(idx)}>X</DeleteButton>
 						</PhotoDiv>
 					))}
 				<Div isImgs={previewImgs.length > 0 && true} hide={previewImgs.length >= 10 && true}>
@@ -110,7 +108,6 @@ function Photos({ houseInfo, setHouseInfo, articleId }: EventProps) {
 export default Photos;
 
 const Container = styled.div<ContainerProps>`
-	width: calc(100% - 2rem);
 	height: ${({ height }) => (height ? `${height}rem` : "auto")};
 	margin: 1rem;
 	padding: 2rem;
@@ -119,6 +116,15 @@ const Container = styled.div<ContainerProps>`
 	position: relative;
 	display: ${({ grid }) => grid && "grid"};
 	grid-template-columns: repeat(5, 1fr);
+	@media ${(props) => props.theme.tabletS} {
+		grid-template-columns: repeat(4, 1fr);
+	}
+	@media ${(props) => props.theme.mobile} {
+		grid-template-columns: repeat(3, 1fr);
+	}
+	@media ${(props) => props.theme.mobileS} {
+		grid-template-columns: repeat(2, 1fr);
+	}
 `;
 
 const Text = styled.p`
