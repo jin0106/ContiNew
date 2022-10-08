@@ -11,12 +11,14 @@ import HouseInfo from "src/types/houseInfo";
 import styled from "styled-components";
 import Head from "next/head";
 import { saleApi } from "src/api";
-import { checkData, createFormData, getArticleData } from "@utils/index";
+import { checkData, createFormData } from "@utils/index";
 import { useRouter } from "next/router";
 import snakeToCamel from "@utils/snakeToCamel";
 import articleApi from "src/api/article";
 import { toast } from "react-toastify";
 import cookie from "react-cookies";
+import { GetServerSideProps } from "next";
+import { convertURLtoFile } from "@utils/convertURLtoFile";
 
 interface ButtonProps {
 	isApplyBtn?: boolean;
@@ -35,11 +37,15 @@ export interface TextAreaProps {
 	setHouseInfo?: React.Dispatch<React.SetStateAction<HouseInfo>>;
 }
 
+interface Props {
+	saleInfo: HouseInfo;
+}
+
 const numberKey = ["deposit", "monthlyRent", "maintenanceFee", "period", "floor"];
 
-function index() {
+function index(props: Props) {
+	let { saleInfo } = props;
 	const accessToken = cookie.load("access_token");
-
 	const router = useRouter();
 	const [houseInfo, setHouseInfo] = useState<HouseInfo>({
 		saleType: "",
@@ -54,7 +60,7 @@ function index() {
 		jibunAddress: "",
 		addressDetail: "",
 		floor: "",
-		images: null,
+		images: [],
 		description: "",
 		sidoName: "",
 		gunguName: "",
@@ -63,14 +69,25 @@ function index() {
 		longitude: 0,
 		agreement: "",
 	});
-	const setData = async (id: number) => {
-		const data = await getArticleData(id);
-		setHouseInfo(snakeToCamel(data, "modified") as HouseInfo);
-	};
 
+	const convertUrltoFileList = () => {
+		const snakeInfo = snakeToCamel(saleInfo) as HouseInfo;
+		const newImgs: File[] = [];
+		const img = Array.from(saleInfo.images as string[]);
+		img.forEach(
+			async (file) =>
+				await convertURLtoFile(file).then((v) => {
+					newImgs.push(v);
+				}),
+		);
+		const temp = { ...snakeInfo, images: newImgs as unknown as File[] };
+		setHouseInfo(temp);
+	};
 	useEffect(() => {
-		if (router.query.id) setData(+router.query.id);
-	}, [router.query.id]);
+		if (saleInfo) {
+			convertUrltoFileList();
+		}
+	}, []);
 
 	const handleOptions = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const idx = houseInfo.options.indexOf(+e.target.value);
@@ -110,7 +127,6 @@ function index() {
 
 	const editSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
 		e.preventDefault();
-		console.log(houseInfo.images);
 		if (checkData(houseInfo) && houseInfo.agreement === "agree" && router.query.id) {
 			const res = await articleApi.editArticle(createFormData(houseInfo), +router.query.id);
 			if (res.status === 204) window.location.replace(`/article/${router.query.id}`);
@@ -141,7 +157,6 @@ function index() {
 				/>
 				<Photos
 					houseInfo={houseInfo}
-					changeEvent={handleHouseInfo}
 					setHouseInfo={setHouseInfo}
 					articleId={
 						router.query.id !== undefined ? parseInt(router.query.id as string) : undefined
@@ -180,6 +195,23 @@ function index() {
 		router.push("/account/signin")
 	);
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+	if (context.query.id) {
+		const { id } = context.query;
+		const res = await articleApi.getArticle(+id!);
+		return {
+			props: {
+				saleInfo: res?.data,
+			},
+		};
+	}
+	return {
+		props: {
+			saleInfo: false,
+		},
+	};
+};
 
 export default index;
 
