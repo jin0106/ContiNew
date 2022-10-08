@@ -1,8 +1,8 @@
-import { convertURLtoFile } from "@utils/convertURLtoFile";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { EventProps } from "src/pages/createSale";
 import styled from "styled-components";
 import { SmallContainer } from "../Container";
+
 interface ContainerProps {
 	height?: number;
 	background?: boolean;
@@ -15,43 +15,26 @@ interface DivProps {
 	hide?: boolean;
 }
 
-function Photos({ houseInfo, setHouseInfo, articleId }: EventProps) {
-	const [uploadImgs, setUploadImgs] = useState<FileList | null>(null);
-	const [previewImgs, setPreviewImgs] = useState<string[]>([]);
-
-	useEffect(() => {
-		if (houseInfo.images && articleId) setPreviewImgs(houseInfo.images as string[]);
-	}, [articleId]);
-
-	const setUploadImages = (imgs: FileList) => {
-		uploadImgs ? setUploadImgs({ ...uploadImgs, ...imgs }) : setUploadImgs(imgs);
-	};
-
+function Photos({ houseInfo, setHouseInfo }: Omit<EventProps, "changeEvent">) {
+	const [ready, setIsReady] = useState(false);
+	const btn = useRef<HTMLButtonElement>(null);
 	const addMoreImage = (imgs: FileList) => {
-		const dataTransfer = new DataTransfer();
-		const img = [...Array.from(houseInfo.images as FileList), ...Array.from(imgs)];
-		img.forEach((file) => dataTransfer.items.add(file));
-		setHouseInfo({ ...houseInfo, images: dataTransfer.files });
+		const img = [...(houseInfo.images as FileList), ...imgs].slice(0, 10);
+		setHouseInfo({ ...houseInfo, images: img as unknown as FileList });
 	};
 
-	const sliceByTen = (imgs: FileList) => {
-		const newImgs: string[] = [];
-		[...imgs].forEach((img) => newImgs.push(URL.createObjectURL(img)));
-		return newImgs.splice(0, 10);
+	useLayoutEffect(() => {
+		setTimeout(() => btn.current?.click(), 100);
+	}, []);
+
+	const testCode = () => {
+		setIsReady(true);
 	};
 
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const selectedImages = e.target.files!;
-		setUploadImages(selectedImages);
-		if (!articleId && houseInfo.images) addMoreImage(selectedImages);
+		if (houseInfo.images) addMoreImage(selectedImages);
 		else setHouseInfo({ ...houseInfo, images: selectedImages });
-		const imgs = sliceByTen(selectedImages);
-		setPreviewImgs([...previewImgs, ...imgs]);
-	};
-
-	const slicePreviewImg = (idx: number) => {
-		previewImgs.splice(idx, 1);
-		setPreviewImgs([...previewImgs]);
 	};
 
 	const sliceImgFile = (idx: number): FileList => {
@@ -62,20 +45,8 @@ function Photos({ houseInfo, setHouseInfo, articleId }: EventProps) {
 		return dataTransfer.files;
 	};
 
-	const sliceImgFileModifyMode = (idx: number): FileList => {
-		const dataTransfer = new DataTransfer();
-		const img = Array.from(houseInfo.images as string[]);
-		const newImg = img.map(async (file) => await convertURLtoFile(file));
-		newImg.splice(idx, 1);
-		newImg.forEach(async (file) => dataTransfer.items.add(await file));
-		return dataTransfer.files;
-	};
-
 	const DeletePhoto = (idx: number) => {
-		slicePreviewImg(idx);
-		let newImg;
-		if (articleId) newImg = sliceImgFileModifyMode(idx);
-		else newImg = sliceImgFile(idx);
+		const newImg = sliceImgFile(idx);
 		setHouseInfo({ ...houseInfo, images: newImg });
 	};
 
@@ -87,15 +58,21 @@ function Photos({ houseInfo, setHouseInfo, articleId }: EventProps) {
 				<Text>- 사진은 가로로 찍은 사진을 권장합니다.</Text>
 			</Container>
 			<Container background={true} grid={true}>
-				{previewImgs.length > 0 &&
-					previewImgs.map((img, idx) => (
+				{Array.from(houseInfo.images as FileList).length > 0 &&
+					[...(houseInfo.images as FileList)].map((value, idx) => (
 						<PhotoDiv key={idx + 100}>
-							<PreviewImg src={img} alt="" />
+							<PreviewImg src={URL.createObjectURL(value)} alt="" />
 							<DeleteButton onClick={() => DeletePhoto(idx)}>X</DeleteButton>
 						</PhotoDiv>
 					))}
-				<Div isImgs={previewImgs.length > 0 && true} hide={previewImgs.length >= 10 && true}>
-					<Label isImgs={previewImgs.length > 0 && true} htmlFor="images">
+				<HiddenButton onClick={testCode} ref={btn}>
+					기존 이미지 불러오기
+				</HiddenButton>
+				<Div
+					isImgs={houseInfo.images?.length > 0 && true}
+					hide={houseInfo.images?.length >= 10 && true}
+				>
+					<Label isImgs={houseInfo.images?.length > 0 && true} htmlFor="images">
 						사진 추가하기
 					</Label>
 					<Input type="file" id="images" multiple accept="image/*" onChange={handleImageChange} />
@@ -109,6 +86,7 @@ export default Photos;
 
 const Container = styled.div<ContainerProps>`
 	height: ${({ height }) => (height ? `${height}rem` : "auto")};
+	min-height: 20rem;
 	margin: 1rem;
 	padding: 2rem;
 	border: ${(props) => (props.background ? "none" : `1px solid ${props.theme.borderColor}`)};
@@ -196,4 +174,8 @@ const DeleteButton = styled.button`
 	top: -1rem;
 	right: -1rem;
 	cursor: pointer;
+`;
+
+const HiddenButton = styled.button`
+	display: none;
 `;
