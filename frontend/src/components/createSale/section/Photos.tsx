@@ -18,26 +18,27 @@ interface DivProps {
 function Photos({ houseInfo, setHouseInfo }: Omit<EventProps, "changeEvent">) {
 	const [ready, setIsReady] = useState(false);
 	const btn = useRef<HTMLButtonElement>(null);
-	const addMoreImage = (imgs: FileList) => {
-		const img = [...(houseInfo.images as FileList), ...imgs].slice(0, 10);
+
+	const addSelectedImg = (imgs: FileList) => {
+		const img = [...houseInfo.images, ...imgs].slice(0, 10);
 		setHouseInfo({ ...houseInfo, images: img as unknown as FileList });
 	};
 
 	useLayoutEffect(() => {
-		setTimeout(() => btn.current?.click(), 100);
+		if (houseInfo.images) setTimeout(() => btn.current?.click(), 100);
 	}, []);
 
-	const testCode = () => {
+	const initEvent = () => {
 		setIsReady(true);
 	};
 
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const selectedImages = e.target.files!;
-		if (houseInfo.images) addMoreImage(selectedImages);
+		if (houseInfo.images) addSelectedImg(selectedImages);
 		else setHouseInfo({ ...houseInfo, images: selectedImages });
 	};
 
-	const sliceImgFile = (idx: number): FileList => {
+	const spliceIdxImage = (idx: number): FileList => {
 		const dataTransfer = new DataTransfer();
 		const img = Array.from(houseInfo.images as FileList);
 		img.splice(idx, 1);
@@ -46,7 +47,7 @@ function Photos({ houseInfo, setHouseInfo }: Omit<EventProps, "changeEvent">) {
 	};
 
 	const DeletePhoto = (idx: number) => {
-		const newImg = sliceImgFile(idx);
+		const newImg = spliceIdxImage(idx);
 		setHouseInfo({ ...houseInfo, images: newImg });
 	};
 
@@ -65,7 +66,7 @@ function Photos({ houseInfo, setHouseInfo }: Omit<EventProps, "changeEvent">) {
 							<DeleteButton onClick={() => DeletePhoto(idx)}>X</DeleteButton>
 						</PhotoDiv>
 					))}
-				<HiddenButton onClick={testCode} ref={btn}>
+				<HiddenButton onClick={initEvent} ref={btn}>
 					기존 이미지 불러오기
 				</HiddenButton>
 				<Div
