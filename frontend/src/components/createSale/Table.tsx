@@ -4,10 +4,6 @@ interface CheckedProps {
 	isCheck: string | undefined;
 }
 
-interface TextProps {
-	size?: number;
-}
-
 export const Label = styled.label`
 	position: relative;
 	display: block;
@@ -34,7 +30,7 @@ export const Text = styled.p`
 	}
 `;
 
-export const Pbox = styled.p<CheckedProps>`
+export const StyledPTag = styled.p<CheckedProps>`
 	font-size: 1.2rem;
 	display: flex;
 	align-items: center;

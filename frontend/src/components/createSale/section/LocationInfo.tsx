@@ -9,12 +9,6 @@ import LocationTableData from "../LocationComponent";
 import styled from "styled-components";
 
 function LocationInfo({ houseInfo, changeEvent, setHouseInfo }: EventProps) {
-	useEffect(() => {
-		const script = document.createElement("script");
-		script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
-		document.body.append(script);
-	}, []);
-
 	const searchCoordinate = async (data: DaumPostcodeData) => {
 		const result = await axios.get(
 			`https://dapi.kakao.com/v2/local/search/address.json?query=${data.address}`,
@@ -28,17 +22,17 @@ function LocationInfo({ houseInfo, changeEvent, setHouseInfo }: EventProps) {
 		const { jibunAddress, sido, sigungu, bname } = data;
 		const longitude = +result.data.documents[0].x;
 		const latitude = +result.data.documents[0].y;
-		if (setHouseInfo)
-			setHouseInfo({
-				...houseInfo,
-				longitude,
-				latitude,
-				jibunAddress,
-				sidoName: sido,
-				gunguName: sigungu,
-				dongName: bname,
-			});
+		setHouseInfo({
+			...houseInfo,
+			longitude,
+			latitude,
+			jibunAddress,
+			sidoName: sido,
+			gunguName: sigungu,
+			dongName: bname,
+		});
 	};
+
 	const loadLayout = (e: React.FormEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 		window.daum.postcode.load(() => {

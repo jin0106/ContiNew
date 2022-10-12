@@ -1,6 +1,6 @@
 import React from "react";
 import HouseInfo from "src/types/houseInfo";
-import { InputRadio, Label, Pbox } from "./Table";
+import { InputRadio, Label, StyledPTag } from "./Table";
 
 interface SaleInfoComponentProps {
 	value: string;
@@ -26,7 +26,7 @@ function SaleInfoComponent({ value, houseInfo, changeEvent, type }: SaleInfoComp
 					checked={checkType()}
 					onChange={changeEvent}
 				/>
-				<Pbox isCheck={checkType() ? "checked" : undefined}>{value}</Pbox>
+				<StyledPTag isCheck={checkType() ? "checked" : undefined}>{value}</StyledPTag>
 			</Label>
 		</li>
 	);
