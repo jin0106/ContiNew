@@ -1,6 +1,6 @@
 import HouseInfo from "src/types/houseInfo";
 import InputCheck from "./InputCheck";
-import { Label, Pbox } from "./Table";
+import { Label, StyledPTag } from "./Table";
 
 export interface OptionInfoListProps {
 	value: number;
@@ -14,13 +14,13 @@ function OptionInfoList({ value, changeEvent, title, houseInfo }: OptionInfoList
 		<li>
 			<Label htmlFor="options">
 				<InputCheck name="options" type="checkbox" value={value} onChange={changeEvent} />
-				<Pbox
+				<StyledPTag
 					isCheck={
 						houseInfo !== undefined && houseInfo.options.includes(value) ? "checked" : undefined
 					}
 				>
 					{title}
-				</Pbox>
+				</StyledPTag>
 			</Label>
 		</li>
 	);
