@@ -43,7 +43,9 @@ function RoomType() {
 										: roomType === "전체"
 								}
 							/>
-							<Label htmlFor={value} style={{ cursor: "pointer" }} />
+							<Label htmlFor={value} style={{ cursor: "pointer" }}>
+								{value}
+							</Label>
 						</InputBox>
 					))}
 				</Tab>
