@@ -15,17 +15,13 @@ function PriceTab() {
 	const contractTypeArr = ["전체", "월세", "전세"];
 	const [contractTypes, setContractTypes] = useState("전체");
 	const changeContractTypeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-		const { id } = e.target;
-		if (contractTypes === id) {
-			setContractTypes("");
-			return chagneRedux("1");
-		}
-		if (id === "전체") {
-			setContractTypes(id);
+		const { value } = e.target;
+		if (value === "전체") {
+			setContractTypes(value);
 			return chagneRedux("");
 		}
-		setContractTypes(id);
-		return chagneRedux(id);
+		setContractTypes(value);
+		return chagneRedux(value);
 	};
 
 	const chagneRedux = (str: string) => {
@@ -39,14 +35,11 @@ function PriceTab() {
 					{contractTypeArr.map((value, idx) => (
 						<InputBox key={idx}>
 							<Input
-								type="checkbox"
-								id={value}
+								type="radio"
+								name="price"
+								value={value}
 								onChange={changeContractTypeHandler}
-								checked={
-									value !== "전체"
-										? contractTypes === "전체" || contractTypes === value
-										: contractTypes === "전체"
-								}
+								checked={contractTypes === value}
 							/>
 							<Label htmlFor={value} style={{ cursor: "pointer" }}>
 								{value}
