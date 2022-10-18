@@ -1,8 +1,7 @@
-import OptionInfoList from "@components/createSale/OptionInfoList";
-import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "src/store";
 import { setOptions } from "src/store/searchFilter";
+import OptionInfoList from "@components/createSale/OptionInfoList";
 import styled from "styled-components";
 import Container from "./Container";
 
@@ -10,15 +9,21 @@ function Options() {
 	const dispatch = useDispatch();
 	const houseInfo = useSelector((state: RootState) => state.searchFilter);
 	const optionsList = houseInfo["options"] as number[];
-	const changeEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const idx = optionsList.indexOf(+e.target.value);
-		if (idx !== -1) {
-			const deleteOption = optionsList.slice().filter((i) => i !== +e.target.value);
-			return dispatch(setOptions({ options: deleteOption }));
-		}
+	const DeleteOption = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const deleteOption = optionsList.slice().filter((i) => i !== +e.target.value);
+		return dispatch(setOptions({ options: deleteOption }));
+	};
+
+	const addOption = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const addOptions = optionsList.slice();
 		addOptions.push(+e.target.value);
 		dispatch(setOptions({ options: addOptions }));
+	};
+
+	const changeEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const idx = optionsList.indexOf(+e.target.value);
+		if (idx !== -1) DeleteOption(e);
+		else addOption(e);
 	};
 
 	const options = [
