@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "src/store";
 import { setPeriod } from "src/store/searchFilter";

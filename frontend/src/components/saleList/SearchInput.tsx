@@ -32,7 +32,6 @@ function SearchInput({ kakaoMap }: MapRefType) {
 			result: Result[] | GeoCodeType[],
 			status: kakao.maps.services.Status,
 		) => {
-			console.log(result);
 			if (result.length === 0) return;
 			if (status === window.kakao.maps.services.Status.OK) {
 				const coords = new window.kakao.maps.LatLng(+result[0].y, +result[0].x);
