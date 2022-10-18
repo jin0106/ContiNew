@@ -12,31 +12,16 @@ import { useDispatch } from "react-redux";
 
 function PriceTab() {
 	const dispatch = useDispatch();
+	const contractTypeArr = ["전체", "월세", "전세"];
 	const [contractTypes, setContractTypes] = useState("전체");
 	const changeContractTypeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-		const { value, id } = e.target;
-		if (contractTypes === "") {
-			setContractTypes(id);
-			return chagneRedux(id);
-		}
-		if (id !== contractTypes && contractTypes !== "전체") {
-			setContractTypes("전체");
+		const { value } = e.target;
+		if (value === "전체") {
+			setContractTypes(value);
 			return chagneRedux("");
 		}
-		if (contractTypes === "전체") {
-			if (id === "월세") {
-				setContractTypes("전세");
-				return chagneRedux("전세");
-			} else {
-				setContractTypes("월세");
-				return chagneRedux("월세");
-			}
-		}
-
-		if (id === contractTypes) {
-			setContractTypes("");
-			return chagneRedux("전체");
-		}
+		setContractTypes(value);
+		return chagneRedux(value);
 	};
 
 	const chagneRedux = (str: string) => {
@@ -47,27 +32,20 @@ function PriceTab() {
 			<SmallBox>
 				<Title>거래 유형</Title>
 				<Tab>
-					<InputBox>
-						<Input
-							type="checkbox"
-							id="월세"
-							onChange={changeContractTypeHandler}
-							checked={contractTypes === "전체" || contractTypes === "월세"}
-						/>
-						<Label htmlFor="월세" style={{ cursor: "pointer" }}>
-							월세
-						</Label>
-					</InputBox>
-					<InputBox>
-						<Input
-							type="checkbox"
-							id="전세"
-							style={{ cursor: "pointer" }}
-							onChange={changeContractTypeHandler}
-							checked={contractTypes === "전체" || contractTypes === "전세"}
-						/>
-						<Label htmlFor="전세">전세</Label>
-					</InputBox>
+					{contractTypeArr.map((value, idx) => (
+						<InputBox key={idx}>
+							<Input
+								type="radio"
+								name="price"
+								value={value}
+								onChange={changeContractTypeHandler}
+								checked={contractTypes === value}
+							/>
+							<Label htmlFor={value} style={{ cursor: "pointer" }}>
+								{value}
+							</Label>
+						</InputBox>
+					))}
 				</Tab>
 			</SmallBox>
 			<SmallBox>
