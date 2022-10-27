@@ -1,12 +1,14 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useFormContext } from "react-hook-form";
-import { ContractContext } from "src/pages/contract/[id]";
+
 import ContractTerms from "./ContractTerms";
 import { Input, RadioInput } from "./Input";
 import { Label } from "./Label";
-import { Box, Container } from "./SaleInfo";
-import { Section } from "./Section";
+import { InputWrapper, Container } from "./SaleInfo";
 import { Unit } from "./Unit";
+import { Section } from "./Section";
+
+import { ContractContext } from "src/pages/contract/[id]";
 interface Props {
 	disabled: boolean;
 }
@@ -33,7 +35,7 @@ function ContractInfo({ disabled }: Props) {
 			<Section>
 				<Container>
 					{contract_type && (
-						<Box>
+						<InputWrapper>
 							<Label>계약종류</Label>
 							<Label bold={true} htmlFor="전세" width={4}>
 								전세
@@ -57,11 +59,11 @@ function ContractInfo({ disabled }: Props) {
 								defaultChecked={contract_type === "월세"}
 								{...register("contract_type")}
 							/>
-						</Box>
+						</InputWrapper>
 					)}
 				</Container>
 				<Container isJustify={true}>
-					<Box>
+					<InputWrapper>
 						<Label>임차보증금</Label>
 						<Input
 							disabled={disabled}
@@ -70,8 +72,8 @@ function ContractInfo({ disabled }: Props) {
 							{...register("tenancy_deposit")}
 						/>
 						<Unit>만원</Unit>
-					</Box>
-					<Box>
+					</InputWrapper>
+					<InputWrapper>
 						<Label>관리비</Label>
 						<Input
 							disabled={disabled}
@@ -80,7 +82,7 @@ function ContractInfo({ disabled }: Props) {
 							{...register("maintenance_fee")}
 						/>
 						<Unit>만원</Unit>
-					</Box>
+					</InputWrapper>
 				</Container>
 				<Container>
 					<Label>계약 기간</Label>
