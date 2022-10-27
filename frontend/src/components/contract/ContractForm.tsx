@@ -1,10 +1,12 @@
-import { Header } from "@components/account/Header";
 import { useContext, useEffect, useState } from "react";
-import { ContractContext } from "src/pages/contract/[id]";
-import styled from "styled-components";
+
+import { Header } from "@components/account/Header";
 import ContractInfo from "./ContractInfo";
 import ContractorsInfo from "./ContractorsInfo";
 import SaleInfo from "./SaleInfo";
+
+import { ContractContext } from "src/pages/contract/[id]";
+import styled from "styled-components";
 
 function ContractForm() {
 	const [disabled, setDisabled] = useState(true);

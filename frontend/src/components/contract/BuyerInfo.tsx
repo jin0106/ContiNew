@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { ContractContext } from "src/pages/contract/[id]";
+
 import { Input } from "./Input";
 import { Label } from "./Label";
-import { Box, Container } from "./SaleInfo";
+import { InputWrapper, Container } from "./SaleInfo";
 import Signature from "./Signature";
+
+import { ContractContext } from "src/pages/contract/[id]";
 
 function BuyerInfo() {
 	const [disabled, setDisabled] = useState(true);
@@ -27,7 +29,7 @@ function BuyerInfo() {
 				<Input disabled={disabled} {...register("buyer_address")} defaultValue={buyer_address} />
 			</Container>
 			<Container isJustify={true}>
-				<Box>
+				<InputWrapper>
 					<Label>신규 임차인 성명</Label>
 					<Input
 						disabled={disabled}
@@ -35,8 +37,8 @@ function BuyerInfo() {
 						defaultValue={buyer_name}
 						width={25}
 					/>
-				</Box>
-				<Box>
+				</InputWrapper>
+				<InputWrapper>
 					<Label>
 						신규 임차인<br></br>생년월일
 					</Label>
@@ -47,7 +49,7 @@ function BuyerInfo() {
 						defaultValue={buyer_birth}
 						width={30}
 					/>
-				</Box>
+				</InputWrapper>
 			</Container>
 			<Container>
 				<Label>신규 임차인 전화</Label>

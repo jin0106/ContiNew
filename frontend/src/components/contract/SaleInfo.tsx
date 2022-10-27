@@ -1,12 +1,13 @@
 import { useContext } from "react";
 import { useFormContext } from "react-hook-form";
-import { ContractContext } from "src/pages/contract/[id]";
-import styled from "styled-components";
+
 import { Input } from "./Input";
 import { Label } from "./Label";
 import { Section } from "./Section";
 import { Unit } from "./Unit";
 
+import { ContractContext } from "src/pages/contract/[id]";
+import styled from "styled-components";
 interface Props {
 	disabled: boolean;
 }
@@ -28,14 +29,14 @@ function SaleInfo({ disabled }: Props) {
 				</Container>
 
 				<Container isJustify={true}>
-					<Box>
+					<InputWrapper>
 						<Label>면적</Label>
 						<Input disabled={disabled} defaultValue={area} width={25} {...register("area")} />
 						<Unit>
 							m<sup>2</sup>
 						</Unit>
-					</Box>
-					<Box>
+					</InputWrapper>
+					<InputWrapper>
 						<Label>전용면적</Label>
 						<Input
 							disabled={disabled}
@@ -46,7 +47,7 @@ function SaleInfo({ disabled }: Props) {
 						<Unit>
 							m<sup>2</sup>
 						</Unit>
-					</Box>
+					</InputWrapper>
 				</Container>
 			</Section>
 		</>
@@ -64,7 +65,7 @@ export const Container = styled.div<ContainerProps>`
 	}
 `;
 
-export const Box = styled.div`
+export const InputWrapper = styled.div`
 	display: flex;
 	align-items: center;
 	@media ${(props) => props.theme.mobileS} {

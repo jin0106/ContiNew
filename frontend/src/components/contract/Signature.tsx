@@ -1,6 +1,7 @@
 import { useContext, useRef } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import ReactSignatureCanvas from "react-signature-canvas";
+
 import { ContractContext } from "src/pages/contract/[id]";
 import styled from "styled-components";
 
@@ -11,13 +12,15 @@ interface Props {
 function Signature({ signatureDisabled, from }: Props) {
 	const signCanvas = useRef() as React.MutableRefObject<any>;
 	const { seller_signature, buyer_signature } = useContext(ContractContext);
+
+	const { control } = useFormContext();
+
 	const formatIntoPng = () => {
 		if (signCanvas.current) {
 			const dataURL = signCanvas.current.toDataURL("image/png");
 			return dataURL;
 		}
 	};
-	const { control } = useFormContext();
 
 	return (
 		<div>

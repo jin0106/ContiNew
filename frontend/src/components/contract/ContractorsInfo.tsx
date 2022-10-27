@@ -1,6 +1,6 @@
 import BuyerInfo from "./BuyerInfo";
-import { Section } from "./Section";
 import SellerInfo from "./SellerInfo";
+import { Section } from "./Section";
 
 function ContractorsInfo() {
 	return (

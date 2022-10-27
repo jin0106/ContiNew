@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
+
 import { ContractContext } from "src/pages/contract/[id]";
 import { Input } from "./Input";
 import { Label } from "./Label";
-import { Box, Container } from "./SaleInfo";
+import { InputWrapper, Container } from "./SaleInfo";
 import Signature from "./Signature";
 
 function SellerInfo() {
@@ -29,7 +30,7 @@ function SellerInfo() {
 				<Input disabled={disabled} defaultValue={seller_address} {...register("seller_address")} />
 			</Container>
 			<Container isJustify={true}>
-				<Box>
+				<InputWrapper>
 					<Label>임차인 성명</Label>
 					<Input
 						disabled={disabled}
@@ -37,9 +38,8 @@ function SellerInfo() {
 						{...register("seller_name")}
 						width={25}
 					/>
-				</Box>
-
-				<Box>
+				</InputWrapper>
+				<InputWrapper>
 					<Label>
 						임차인 <br></br>생년월일
 					</Label>
@@ -50,7 +50,7 @@ function SellerInfo() {
 						{...register("seller_birth")}
 						width={25}
 					/>
-				</Box>
+				</InputWrapper>
 			</Container>
 			<Container>
 				<Label>임차인 전화</Label>

@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { RootState } from "src/store";
 import { useSelector } from "react-redux";
-
-import styled from "styled-components";
-import { useForm, FormProvider } from "react-hook-form";
 import { Step, Stepper } from "react-form-stepper";
+import { useForm, FormProvider } from "react-hook-form";
+
+import contractApi from "src/api/contract";
 
 import ContractForm from "@components/contract/ContractForm";
-import contractApi from "src/api/contract";
-import { ContractType } from "src/types/contractType";
 
-interface ButtonProps {
-	isColor?: boolean;
-}
+import { RootState } from "src/store";
+import { ContractType } from "src/types/contractType";
+import styled from "styled-components";
 
 export const ContractContext = React.createContext<ContractType>({});
 
@@ -23,7 +20,7 @@ function Contract() {
 
 	const buyerId = router.query.buyerId as string;
 	const sellerId = router.query.sellerId as string;
-	const articleId = Number(router.query.articleId as string);
+	const articleId = Number(router.query.articleId);
 	const value = { buyer: buyerId, seller: sellerId, house_id: articleId };
 
 	const [contract, setContract] = useState<ContractType>({});
@@ -49,7 +46,7 @@ function Contract() {
 		}
 	};
 
-	const handleNextStepClick = async (data: any) => {
+	const handleNextStepClick = async (data: ContractType) => {
 		const contractInfo = {
 			...data,
 			house_id: articleId,
@@ -64,7 +61,7 @@ function Contract() {
 		}
 	};
 
-	const handleTempSaveClick = async (data: any) => {
+	const handleTempSaveClick = async (data: ContractType) => {
 		const contractInfo = {
 			...data,
 			house_id: articleId,
@@ -126,6 +123,10 @@ const StyledDiv = styled.div`
 	display: flex;
 	justify-content: center;
 `;
+
+interface ButtonProps {
+	isColor?: boolean;
+}
 
 const Button = styled.button<ButtonProps>`
 	border: ${(props) => (props.isColor ? "none" : `1px solid ${props.theme.borderColor}`)};
