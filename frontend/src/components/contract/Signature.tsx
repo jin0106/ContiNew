@@ -1,48 +1,44 @@
-import { useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useContext, useRef } from "react";
+import { Controller, useFormContext } from "react-hook-form";
 import ReactSignatureCanvas from "react-signature-canvas";
-import { RootState } from "src/store";
-import { SET_STEP2, SET_STEP3 } from "src/store/contract";
-import { ContractType } from "src/types/contractType";
+import { ContractContext } from "src/pages/contract/[id]";
 import styled from "styled-components";
 
 interface Props {
 	signatureDisabled: boolean;
-	role: string;
 	from: string;
 }
-function Signature({ signatureDisabled, role, from }: Props) {
-	const dispatch = useDispatch();
+function Signature({ signatureDisabled, from }: Props) {
 	const signCanvas = useRef() as React.MutableRefObject<any>;
-	const contract = useSelector((state: RootState) => state.contractInfo);
-	const contractInfo: ContractType = contract["contract"];
-
+	const { seller_signature, buyer_signature } = useContext(ContractContext);
 	const formatIntoPng = () => {
 		if (signCanvas.current) {
 			const dataURL = signCanvas.current.toDataURL("image/png");
-			if (role === "seller") dispatch(SET_STEP3(dataURL));
-			if (role === "buyer") dispatch(SET_STEP2({ ...contractInfo, buyer_signature: dataURL }));
+			return dataURL;
 		}
 	};
+	const { control } = useFormContext();
 
 	return (
 		<div>
 			{signatureDisabled ? (
 				<DisabledCanvas>
-					<img
-						src={
-							from === "sellerInfo" ? contractInfo.seller_signature : contractInfo.buyer_signature
-						}
-					/>
+					<img src={from === "sellerInfo" ? seller_signature : buyer_signature} />
 				</DisabledCanvas>
 			) : (
 				<>
-					<ReactSignatureCanvas
-						ref={signCanvas}
-						canvasProps={{ width: 300, height: 100, className: "sigCanvas" }}
-						clearOnResize={false}
-						backgroundColor="rgb(245, 245, 245)"
-						onEnd={formatIntoPng}
+					<Controller
+						name={from === "sellerInfo" ? "seller_signature" : "buyer_signature"}
+						control={control}
+						render={({ field }) => (
+							<ReactSignatureCanvas
+								ref={signCanvas}
+								canvasProps={{ width: 300, height: 100, className: "sigCanvas" }}
+								clearOnResize={false}
+								backgroundColor="rgb(245, 245, 245)"
+								onEnd={() => field.onChange(formatIntoPng())}
+							/>
+						)}
 					/>
 					<button
 						onClick={() => {

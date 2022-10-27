@@ -1,43 +1,44 @@
-import ContractForm from "@components/contract/ContractForm";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { Step, Stepper } from "react-form-stepper";
-import { useDispatch, useSelector } from "react-redux";
-import contractApi from "src/api/contract";
 import { RootState } from "src/store";
-import { SET_CONTRACT, SET_ID, SET_LEVEL, SET_ROLE } from "src/store/contract";
-import { ContractStore } from "src/types/contractType";
+import { useSelector } from "react-redux";
+
 import styled from "styled-components";
+import { useForm, FormProvider } from "react-hook-form";
+import { Step, Stepper } from "react-form-stepper";
+
+import ContractForm from "@components/contract/ContractForm";
+import contractApi from "src/api/contract";
+import { ContractType } from "src/types/contractType";
 
 interface ButtonProps {
 	isColor?: boolean;
 }
 
+export const ContractContext = React.createContext<ContractType>({});
+
 function Contract() {
 	const router = useRouter();
-	const dispatch = useDispatch();
+	const methods = useForm();
 
 	const buyerId = router.query.buyerId as string;
 	const sellerId = router.query.sellerId as string;
 	const articleId = Number(router.query.articleId as string);
-
-	const contract: ContractStore = useSelector((state: RootState) => state.contractInfo);
-	const loginId = useSelector((state: RootState) => state.userInfo.login_id);
-	const step = contract.step.current_step;
-	const role = contract.role.user_role;
 	const value = { buyer: buyerId, seller: sellerId, house_id: articleId };
 
+	const [contract, setContract] = useState<ContractType>({});
+	const { current_level: step, role } = contract;
+
 	useEffect(() => {
-		dispatch(SET_ID(value));
 		getContractInfo();
-		if (loginId === buyerId) dispatch(SET_ROLE("buyer"));
-		else dispatch(SET_ROLE("seller"));
 	}, []);
 
 	const getContractInfo = async () => {
+		const loginId = useSelector((state: RootState) => state.userInfo.login_id);
 		const res = await contractApi.getContract(value);
 		if (res.status) {
-			dispatch(SET_CONTRACT(res.data));
+			if (sellerId === loginId) setContract({ ...res.data, role: "seller" });
+			else setContract({ ...res.data, role: "buyer" });
 		}
 	};
 
@@ -48,14 +49,32 @@ function Contract() {
 		}
 	};
 
-	const handleNextStepClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
-		const { id } = e.target as HTMLElement;
-		if (id === "next") dispatch(SET_LEVEL(true));
-		else if (id === "save") dispatch(SET_LEVEL(false));
-		const contractInfo = { ...contract.id, ...contract.contract, ...contract.level };
+	const handleNextStepClick = async (data: any) => {
+		const contractInfo = {
+			...data,
+			house_id: articleId,
+			seller_login_id: sellerId,
+			buyer_login_id: buyerId,
+			next_level: true,
+		};
 		const res = await contractApi.createContract(contractInfo);
 		if (res.status) {
 			alert(`${step}단계 계약서 작성이 완료되었습니다.`);
+			window.location.href = "/contract";
+		}
+	};
+
+	const handleTempSaveClick = async (data: any) => {
+		const contractInfo = {
+			...data,
+			house_id: articleId,
+			seller_login_id: sellerId,
+			buyer_login_id: buyerId,
+			next_level: false,
+		};
+		const res = await contractApi.createContract(contractInfo);
+		if (res.status) {
+			alert(`계약서를 임시저장 했습니다.`);
 			window.location.href = "/contract";
 		}
 	};
@@ -68,10 +87,10 @@ function Contract() {
 		) {
 			return (
 				<StyledDiv>
-					<Button id="save" onClick={handleNextStepClick}>
+					<Button id="save" onClick={methods.handleSubmit(handleTempSaveClick)}>
 						임시 저장
 					</Button>
-					<Button id="next" onClick={handleNextStepClick} isColor={true}>
+					<Button id="next" onClick={methods.handleSubmit(handleNextStepClick)} isColor={true}>
 						다음 단계
 					</Button>
 				</StyledDiv>
@@ -80,22 +99,24 @@ function Contract() {
 	};
 
 	return (
-		<>
-			{step === 4 ? (
-				<ContractForm />
-			) : (
-				<>
-					<Stepper activeStep={step - 1}>
-						<Step label="계약 조건 작성" />
-						<Step label="신규 임차인 정보 작성 및 서명" />
-						<Step label="임차인 서명" />
-					</Stepper>
+		<ContractContext.Provider value={contract}>
+			<FormProvider {...methods}>
+				{step === 4 ? (
 					<ContractForm />
-					<BreakButton onClick={handleBreakContractButton}>계약 파기</BreakButton>
-					{showButtons()}
-				</>
-			)}
-		</>
+				) : (
+					<>
+						<Stepper activeStep={step && step - 1}>
+							<Step label="계약 조건 작성" />
+							<Step label="신규 임차인 정보 작성 및 서명" />
+							<Step label="임차인 서명" />
+						</Stepper>
+						<ContractForm />
+						<BreakButton onClick={handleBreakContractButton}>계약 파기</BreakButton>
+						{showButtons()}
+					</>
+				)}
+			</FormProvider>
+		</ContractContext.Provider>
 	);
 }
 

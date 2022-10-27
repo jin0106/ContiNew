@@ -1,7 +1,6 @@
-import { debounce } from "lodash";
-import { useDispatch } from "react-redux";
-import { SET_STEP1 } from "src/store/contract";
-import { ContractType } from "src/types/contractType";
+import { useContext } from "react";
+import { useFormContext } from "react-hook-form";
+import { ContractContext } from "src/pages/contract/[id]";
 import styled from "styled-components";
 import { Input } from "./Input";
 import { Label } from "./Label";
@@ -10,19 +9,14 @@ import { Unit } from "./Unit";
 
 interface Props {
 	disabled: boolean;
-	contractInfo: ContractType;
 }
 interface ContainerProps {
 	isJustify?: boolean;
 }
 
-function SaleInfo({ disabled, contractInfo }: Props) {
-	const dispatch = useDispatch();
-
-	const handleSaleInfoChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = e.target as HTMLInputElement;
-		dispatch(SET_STEP1({ ...contractInfo, [name]: value }));
-	}, 200);
+function SaleInfo({ disabled }: Props) {
+	const { register } = useFormContext();
+	const { location, area, net_leasable_area } = useContext(ContractContext);
 
 	return (
 		<>
@@ -30,24 +24,13 @@ function SaleInfo({ disabled, contractInfo }: Props) {
 			<Section>
 				<Container>
 					<Label>소재지</Label>
-					<Input
-						name="location"
-						disabled={disabled}
-						onChange={handleSaleInfoChange}
-						defaultValue={contractInfo.location}
-					/>
+					<Input disabled={disabled} defaultValue={location} {...register("location")} />
 				</Container>
 
 				<Container isJustify={true}>
 					<Box>
 						<Label>면적</Label>
-						<Input
-							name="area"
-							disabled={disabled}
-							onChange={handleSaleInfoChange}
-							defaultValue={contractInfo.area}
-							width={25}
-						/>
+						<Input disabled={disabled} defaultValue={area} width={25} {...register("area")} />
 						<Unit>
 							m<sup>2</sup>
 						</Unit>
@@ -55,11 +38,10 @@ function SaleInfo({ disabled, contractInfo }: Props) {
 					<Box>
 						<Label>전용면적</Label>
 						<Input
-							name="net_leasable_area"
 							disabled={disabled}
-							onChange={handleSaleInfoChange}
-							defaultValue={contractInfo.net_leasable_area}
+							defaultValue={net_leasable_area}
 							width={25}
+							{...register("net_leasable_area")}
 						/>
 						<Unit>
 							m<sup>2</sup>
