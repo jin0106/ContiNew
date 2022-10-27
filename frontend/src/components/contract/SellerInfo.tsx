@@ -1,57 +1,40 @@
-import { debounce } from "lodash";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { SET_STEP1 } from "src/store/contract";
-import { ContractType } from "src/types/contractType";
+import { useContext, useEffect, useState } from "react";
+import { useFormContext } from "react-hook-form";
+import { ContractContext } from "src/pages/contract/[id]";
 import { Input } from "./Input";
 import { Label } from "./Label";
 import { Box, Container } from "./SaleInfo";
 import Signature from "./Signature";
-interface Props {
-	step: number;
-	role: string;
-	contractInfo: ContractType;
-}
 
-function SellerInfo({ step, role, contractInfo }: Props) {
+function SellerInfo() {
 	const [disabled, setDisabled] = useState(true);
 	const [signatureDisabled, setSignatureDisabled] = useState(true);
-
-	const dispatch = useDispatch();
-
-	const handleSellerInfoChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = e.target as HTMLInputElement;
-		dispatch(SET_STEP1({ ...contractInfo, [name]: value }));
-	}, 200);
+	const { register } = useFormContext();
+	const { role, current_level, seller_address, seller_name, seller_birth, seller_phone } =
+		useContext(ContractContext);
 
 	useEffect(() => {
-		if (step === 1 && role === "seller") {
+		if (current_level === 1 && role === "seller") {
 			setDisabled(false);
 		}
-		if (step === 3 && role === "seller") {
+		if (current_level === 3 && role === "seller") {
 			setSignatureDisabled(false);
 		}
-	}, [step, contractInfo.house_id]);
+	}, [current_level]);
 
 	return (
 		<>
 			<Container>
 				<Label>임차인 주소</Label>
-				<Input
-					disabled={disabled}
-					name="seller_address"
-					defaultValue={contractInfo.seller_address}
-					onChange={handleSellerInfoChange}
-				/>
+				<Input disabled={disabled} defaultValue={seller_address} {...register("seller_address")} />
 			</Container>
 			<Container isJustify={true}>
 				<Box>
 					<Label>임차인 성명</Label>
 					<Input
 						disabled={disabled}
-						name="seller_name"
-						defaultValue={contractInfo.seller_name}
-						onChange={handleSellerInfoChange}
+						defaultValue={seller_name}
+						{...register("seller_name")}
 						width={25}
 					/>
 				</Box>
@@ -62,10 +45,9 @@ function SellerInfo({ step, role, contractInfo }: Props) {
 					</Label>
 					<Input
 						disabled={disabled}
-						name="seller_birth"
 						type="date"
-						defaultValue={contractInfo.seller_birth}
-						onChange={handleSellerInfoChange}
+						defaultValue={seller_birth}
+						{...register("seller_birth")}
 						width={25}
 					/>
 				</Box>
@@ -74,15 +56,14 @@ function SellerInfo({ step, role, contractInfo }: Props) {
 				<Label>임차인 전화</Label>
 				<Input
 					disabled={disabled}
-					name="seller_phone"
-					defaultValue={contractInfo.seller_phone}
-					onChange={handleSellerInfoChange}
+					defaultValue={seller_phone}
+					{...register("seller_phone")}
 					width={30}
 				/>
 			</Container>
 			<Container>
 				<Label>서명</Label>
-				<Signature signatureDisabled={signatureDisabled} role={role} from="sellerInfo" />
+				<Signature signatureDisabled={signatureDisabled} from="sellerInfo" />
 			</Container>
 		</>
 	);

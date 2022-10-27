@@ -1,7 +1,6 @@
-import { debounce } from "lodash";
-import { useDispatch } from "react-redux";
-import { SET_STEP1 } from "src/store/contract";
-import { ContractType } from "src/types/contractType";
+import { useContext, useState } from "react";
+import { useFormContext } from "react-hook-form";
+import { ContractContext } from "src/pages/contract/[id]";
 import ContractTerms from "./ContractTerms";
 import { Input, RadioInput } from "./Input";
 import { Label } from "./Label";
@@ -10,61 +9,65 @@ import { Section } from "./Section";
 import { Unit } from "./Unit";
 interface Props {
 	disabled: boolean;
-	contractInfo: ContractType;
 }
 
-function ContractInfo({ disabled, contractInfo }: Props) {
-	const dispatch = useDispatch();
-
-	const handleContractInfoChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = e.target as HTMLInputElement;
-		console.log(contractInfo);
-		dispatch(SET_STEP1({ ...contractInfo, [name]: value }));
-		console.log(value);
-	}, 200);
+function ContractInfo({ disabled }: Props) {
+	const { register } = useFormContext();
+	const {
+		contract_type,
+		tenancy_deposit,
+		maintenance_fee,
+		contract_start,
+		contract_end,
+		total_premium,
+		down_payment,
+		middle_payment,
+		middle_date,
+		balance_date,
+		balance_payment,
+	} = useContext(ContractContext);
 
 	return (
 		<>
 			<h2>&#91;임차인의 임대차계약 현황&#93;</h2>
 			<Section>
 				<Container>
-					<Box>
-						<Label>계약종류</Label>
-						<Label bold={true} htmlFor="전세" width={4}>
-							전세
-						</Label>
-						<RadioInput
-							type="radio"
-							id="전세"
-							name="contract_type"
-							value="전세"
-							disabled={disabled}
-							defaultChecked={contractInfo.contract_type === "전세"}
-							onChange={handleContractInfoChange}
-						/>
-						<Label bold={true} htmlFor="월세" width={4}>
-							월세
-						</Label>
-						<RadioInput
-							type="radio"
-							id="월세"
-							value="월세"
-							name="contract_type"
-							disabled={disabled}
-							defaultChecked={contractInfo.contract_type === "월세"}
-							onChange={handleContractInfoChange}
-						/>
-					</Box>
+					{contract_type && (
+						<Box>
+							<Label>계약종류</Label>
+							<Label bold={true} htmlFor="전세" width={4}>
+								전세
+							</Label>
+							<RadioInput
+								type="radio"
+								id="전세"
+								value="전세"
+								disabled={disabled}
+								defaultChecked={contract_type === "전세"}
+								{...register("contract_type")}
+							/>
+							<Label bold={true} htmlFor="월세" width={4}>
+								월세
+							</Label>
+							<RadioInput
+								type="radio"
+								id="월세"
+								value="월세"
+								disabled={disabled}
+								defaultChecked={contract_type === "월세"}
+								{...register("contract_type")}
+							/>
+						</Box>
+					)}
 				</Container>
 				<Container isJustify={true}>
 					<Box>
 						<Label>임차보증금</Label>
 						<Input
 							disabled={disabled}
-							defaultValue={contractInfo.tenancy_deposit}
-							name="tenancy_deposit"
-							onChange={handleContractInfoChange}
+							defaultValue={tenancy_deposit}
 							width={25}
+							{...register("tenancy_deposit")}
 						/>
 						<Unit>만원</Unit>
 					</Box>
@@ -72,10 +75,9 @@ function ContractInfo({ disabled, contractInfo }: Props) {
 						<Label>관리비</Label>
 						<Input
 							disabled={disabled}
-							defaultValue={contractInfo.maintenance_fee}
-							name="maintenance_fee"
-							onChange={handleContractInfoChange}
+							defaultValue={maintenance_fee}
 							width={25}
+							{...register("maintenance_fee")}
 						/>
 						<Unit>만원</Unit>
 					</Box>
@@ -85,18 +87,16 @@ function ContractInfo({ disabled, contractInfo }: Props) {
 					<Input
 						type="date"
 						disabled={disabled}
-						name="contract_start"
-						defaultValue={contractInfo.contract_start}
-						onChange={handleContractInfoChange}
+						defaultValue={contract_start}
+						{...register("contract_start")}
 						width={25}
 						margin={3}
 					/>
 					<Input
 						type="date"
 						disabled={disabled}
-						name="contract_end"
-						defaultValue={contractInfo.contract_end}
-						onChange={handleContractInfoChange}
+						defaultValue={contract_end}
+						{...register("contract_end")}
 						width={25}
 					/>
 				</Container>
@@ -106,31 +106,20 @@ function ContractInfo({ disabled, contractInfo }: Props) {
 			<Section>
 				<Container>
 					<Label>총 권리금</Label>
-					<Input
-						disabled={disabled}
-						name="total_premium"
-						defaultValue={contractInfo.total_premium}
-						onChange={handleContractInfoChange}
-					/>
+					<Input disabled={disabled} defaultValue={total_premium} {...register("total_premium")} />
 					<Unit>만원</Unit>
 				</Container>
 				<Container>
 					<Label>계약금</Label>
-					<Input
-						disabled={disabled}
-						name="down_payment"
-						defaultValue={contractInfo.down_payment}
-						onChange={handleContractInfoChange}
-					/>
+					<Input disabled={disabled} defaultValue={down_payment} {...register("down_payment")} />
 					<Unit>만원</Unit>
 				</Container>
 				<Container>
 					<Label>중도금</Label>
 					<Input
 						disabled={disabled}
-						name="middle_payment"
-						defaultValue={contractInfo.middle_payment}
-						onChange={handleContractInfoChange}
+						defaultValue={middle_payment}
+						{...register("middle_payment")}
 					/>
 					<Unit>만원</Unit>
 				</Container>
@@ -139,18 +128,16 @@ function ContractInfo({ disabled, contractInfo }: Props) {
 					<Input
 						type="date"
 						disabled={disabled}
-						name="middle_date"
-						defaultValue={contractInfo.middle_date}
-						onChange={handleContractInfoChange}
+						defaultValue={middle_date}
+						{...register("middle_date")}
 					/>
 				</Container>
 				<Container>
 					<Label>잔금</Label>
 					<Input
 						disabled={disabled}
-						name="balance_payment"
-						defaultValue={contractInfo.balance_payment}
-						onChange={handleContractInfoChange}
+						defaultValue={balance_payment}
+						{...register("balance_payment")}
 					/>
 					<Unit>만원</Unit>
 				</Container>
@@ -159,9 +146,8 @@ function ContractInfo({ disabled, contractInfo }: Props) {
 					<Input
 						type="date"
 						disabled={disabled}
-						name="balance_date"
-						defaultValue={contractInfo.balance_date}
-						onChange={handleContractInfoChange}
+						defaultValue={balance_date}
+						{...register("balance_date")}
 					/>
 				</Container>
 			</Section>
