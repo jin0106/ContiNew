@@ -1,3 +1,4 @@
+import usePhoto from "@container/createSale/hooks/usePhoto";
 import { useLayoutEffect, useRef, useState } from "react";
 import { EventProps } from "src/pages/createSale";
 import styled from "styled-components";
@@ -18,38 +19,14 @@ interface DivProps {
 function Photos({ houseInfo, setHouseInfo }: Omit<EventProps, "changeEvent">) {
 	const [ready, setIsReady] = useState(false);
 	const btn = useRef<HTMLButtonElement>(null);
-
-	const addSelectedImg = (imgs: FileList) => {
-		const img = [...houseInfo.images, ...imgs].slice(0, 10);
-		setHouseInfo({ ...houseInfo, images: img as unknown as FileList });
-	};
+	const { handleImageChange, DeletePhoto } = usePhoto({
+		houseInfo,
+		setHouseInfo,
+	});
 
 	useLayoutEffect(() => {
 		if (houseInfo.images) setTimeout(() => btn.current?.click(), 100);
 	}, []);
-
-	const initEvent = () => {
-		setIsReady(true);
-	};
-
-	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const selectedImages = e.target.files!;
-		if (houseInfo.images) addSelectedImg(selectedImages);
-		else setHouseInfo({ ...houseInfo, images: selectedImages });
-	};
-
-	const spliceIdxImage = (idx: number): FileList => {
-		const dataTransfer = new DataTransfer();
-		const img = Array.from(houseInfo.images as FileList);
-		img.splice(idx, 1);
-		img.forEach((file) => dataTransfer.items.add(file));
-		return dataTransfer.files;
-	};
-
-	const DeletePhoto = (idx: number) => {
-		const newImg = spliceIdxImage(idx);
-		setHouseInfo({ ...houseInfo, images: newImg });
-	};
 
 	return (
 		<SmallContainer title="사진 등록">
@@ -66,7 +43,7 @@ function Photos({ houseInfo, setHouseInfo }: Omit<EventProps, "changeEvent">) {
 							<DeleteButton onClick={() => DeletePhoto(idx)}>X</DeleteButton>
 						</PhotoDiv>
 					))}
-				<HiddenButton onClick={initEvent} ref={btn}>
+				<HiddenButton onClick={() => setIsReady(true)} ref={btn}>
 					기존 이미지 불러오기
 				</HiddenButton>
 				<Div
