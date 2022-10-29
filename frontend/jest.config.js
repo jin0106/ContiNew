@@ -13,6 +13,7 @@ const customJestConfig = {
 		"@styles/(.*)": "<rootDir>/src/styles/$1",
 		"@hooks/(.*)": "<rootDir>/src/hooks/$1",
 		"@utils/(.*)": "<rootDir>/src/utils/$1",
+		"@container/(.*)": "<rootDir>/src/container/$1",
 	},
 };
 
