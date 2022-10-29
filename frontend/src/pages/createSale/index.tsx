@@ -1,3 +1,15 @@
+import React, { useEffect, useState } from "react";
+import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
+import Head from "next/head";
+import { toast } from "react-toastify";
+import cookie from "react-cookies";
+import styled from "styled-components";
+import { saleApi } from "src/api";
+import articleApi from "src/api/article";
+import { checkData, createFormData } from "@utils/index";
+import { convertURLtoFile } from "@utils/convertURLtoFile";
+import snakeToCamel from "@utils/snakeToCamel";
 import {
 	PriceInfo,
 	SaleInfo,
@@ -5,20 +17,8 @@ import {
 	LocationInfo,
 	Description,
 	Photos,
-} from "@components/createSale";
-import React, { useEffect, useState } from "react";
+} from "@container/createSale/components";
 import HouseInfo from "src/types/houseInfo";
-import styled from "styled-components";
-import Head from "next/head";
-import { saleApi } from "src/api";
-import { checkData, createFormData } from "@utils/index";
-import { useRouter } from "next/router";
-import snakeToCamel from "@utils/snakeToCamel";
-import articleApi from "src/api/article";
-import { toast } from "react-toastify";
-import cookie from "react-cookies";
-import { GetServerSideProps } from "next";
-import { convertURLtoFile } from "@utils/convertURLtoFile";
 
 interface ButtonProps {
 	isApplyBtn?: boolean;
