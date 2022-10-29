@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
+import Container from "./Container";
+import { CheckboxList } from "@components/index";
+import styled from "styled-components";
 import { RootState } from "src/store";
 import { setOptions } from "src/store/searchFilter";
-import OptionInfoList from "@components/createSale/OptionInfoList";
-import styled from "styled-components";
-import Container from "./Container";
 
 function Options() {
 	const dispatch = useDispatch();
@@ -42,7 +42,7 @@ function Options() {
 			<StyledUl>
 				{options.map((option, idx) => (
 					<Div key={idx}>
-						<OptionInfoList
+						<CheckboxList
 							value={idx + 1}
 							title={option}
 							changeEvent={changeEvent}
