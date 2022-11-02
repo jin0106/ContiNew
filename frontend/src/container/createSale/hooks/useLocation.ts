@@ -13,8 +13,8 @@ const useLocation = ({ houseInfo, setHouseInfo }: Omit<EventProps, "changeEvent"
 			},
 		);
 		const { jibunAddress, sido, sigungu, bname } = data;
-		const longitude = +result.data.documents[0].x;
-		const latitude = +result.data.documents[0].y;
+		const { x: longitude, y: latitude } = result.data.documents[0];
+
 		setHouseInfo({
 			...houseInfo,
 			longitude,
@@ -26,7 +26,7 @@ const useLocation = ({ houseInfo, setHouseInfo }: Omit<EventProps, "changeEvent"
 		});
 	};
 
-	const loadModal = (e: React.FormEvent<HTMLButtonElement>) => {
+	const loadPopUp = (e: React.FormEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 		window.daum.postcode.load(() => {
 			const postcode = new window.daum.Postcode({
@@ -38,7 +38,7 @@ const useLocation = ({ houseInfo, setHouseInfo }: Omit<EventProps, "changeEvent"
 		});
 	};
 
-	return { loadModal };
+	return { loadPopUp };
 };
 
 export default useLocation;

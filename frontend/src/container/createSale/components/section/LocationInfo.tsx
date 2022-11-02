@@ -1,16 +1,14 @@
-import { useEffect } from "react";
-import { EventProps } from "src/pages/createSale";
+import useLocation from "@container/createSale/hooks/useLocation";
 import { Button, InputText } from "../index";
 import { Text } from "../Table";
-import axios from "axios";
 import { Container } from "../Container";
 import { TableRowAndHead } from "../TableRow";
 import LocationTableData from "../LocationComponent";
+import { EventProps } from "src/pages/createSale";
 import styled from "styled-components";
-import useLocation from "@container/createSale/hooks/useLocation";
 
 function LocationInfo({ houseInfo, changeEvent, setHouseInfo }: EventProps) {
-	const { loadModal } = useLocation({ houseInfo, setHouseInfo });
+	const { loadPopUp } = useLocation({ houseInfo, setHouseInfo });
 
 	return (
 		<Container title="위치 정보">
@@ -23,7 +21,7 @@ function LocationInfo({ houseInfo, changeEvent, setHouseInfo }: EventProps) {
 						placeholder="예) 서울 동대문구 이문동 294-295"
 						readOnly
 					/>
-					<Button onClick={loadModal}>주소 검색</Button>
+					<Button onClick={loadPopUp}>주소 검색</Button>
 				</LocationTableData>
 				<LocationTableData>
 					<InputText
