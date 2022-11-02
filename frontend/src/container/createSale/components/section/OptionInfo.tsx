@@ -1,7 +1,7 @@
-import { EventProps } from "src/pages/createSale";
 import { Container } from "../Container";
 import { TableRow } from "../TableRow";
-import OptionInfoList from "../OptionInfoList";
+import OptionInfoList from "@components/CheckboxList";
+import { EventProps } from "src/pages/createSale";
 
 function OptionInfo({ changeEvent, houseInfo }: EventProps) {
 	const options = [

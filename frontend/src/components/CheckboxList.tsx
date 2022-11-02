@@ -1,15 +1,15 @@
 import HouseInfo from "src/types/houseInfo";
-import InputCheck from "./InputCheck";
-import { Label, StyledPTag } from "./Table";
+import { InputCheck } from "@container/createSale/components";
+import { Label, StyledPTag } from "@container/createSale/components/Table";
 
-export interface OptionInfoListProps {
+export interface CheckboxListProps {
 	value: number;
 	changeEvent: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	title: string;
 	houseInfo?: HouseInfo;
 }
 
-function OptionInfoList({ value, changeEvent, title, houseInfo }: OptionInfoListProps) {
+function CheckboxList({ value, changeEvent, title, houseInfo }: CheckboxListProps) {
 	return (
 		<li>
 			<Label htmlFor="options">
@@ -26,4 +26,4 @@ function OptionInfoList({ value, changeEvent, title, houseInfo }: OptionInfoList
 	);
 }
 
-export default OptionInfoList;
+export default CheckboxList;

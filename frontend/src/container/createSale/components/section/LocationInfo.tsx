@@ -1,49 +1,14 @@
-import { useEffect } from "react";
-import { EventProps } from "src/pages/createSale";
+import useLocation from "@container/createSale/hooks/useLocation";
 import { Button, InputText } from "../index";
 import { Text } from "../Table";
-import axios from "axios";
 import { Container } from "../Container";
 import { TableRowAndHead } from "../TableRow";
 import LocationTableData from "../LocationComponent";
+import { EventProps } from "src/pages/createSale";
 import styled from "styled-components";
 
 function LocationInfo({ houseInfo, changeEvent, setHouseInfo }: EventProps) {
-	const searchCoordinate = async (data: DaumPostcodeData) => {
-		const result = await axios.get(
-			`https://dapi.kakao.com/v2/local/search/address.json?query=${data.address}`,
-			{
-				headers: {
-					Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_REST_API}`,
-				},
-				withCredentials: false,
-			},
-		);
-		const { jibunAddress, sido, sigungu, bname } = data;
-		const longitude = +result.data.documents[0].x;
-		const latitude = +result.data.documents[0].y;
-		setHouseInfo({
-			...houseInfo,
-			longitude,
-			latitude,
-			jibunAddress,
-			sidoName: sido,
-			gunguName: sigungu,
-			dongName: bname,
-		});
-	};
-
-	const loadLayout = (e: React.FormEvent<HTMLButtonElement>) => {
-		e.preventDefault();
-		window.daum.postcode.load(() => {
-			const postcode = new window.daum.Postcode({
-				oncomplete: function (data) {
-					searchCoordinate(data);
-				},
-			});
-			postcode.open();
-		});
-	};
+	const { loadPopUp } = useLocation({ houseInfo, setHouseInfo });
 
 	return (
 		<Container title="위치 정보">
@@ -56,7 +21,7 @@ function LocationInfo({ houseInfo, changeEvent, setHouseInfo }: EventProps) {
 						placeholder="예) 서울 동대문구 이문동 294-295"
 						readOnly
 					/>
-					<Button onClick={loadLayout}>주소 검색</Button>
+					<Button onClick={loadPopUp}>주소 검색</Button>
 				</LocationTableData>
 				<LocationTableData>
 					<InputText
