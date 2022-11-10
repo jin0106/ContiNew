@@ -15,6 +15,7 @@ interface Props {
 
 function ContractInfo({ disabled }: Props) {
 	const { register } = useFormContext();
+
 	const {
 		contract_type,
 		tenancy_deposit,
@@ -34,33 +35,29 @@ function ContractInfo({ disabled }: Props) {
 			<h2>&#91;임차인의 임대차계약 현황&#93;</h2>
 			<Section>
 				<Container>
-					{contract_type && (
-						<InputWrapper>
-							<Label>계약종류</Label>
-							<Label bold={true} htmlFor="전세" width={4}>
-								전세
-							</Label>
-							<RadioInput
-								type="radio"
-								id="전세"
-								value="전세"
-								disabled={disabled}
-								defaultChecked={contract_type === "전세"}
-								{...register("contract_type")}
-							/>
-							<Label bold={true} htmlFor="월세" width={4}>
-								월세
-							</Label>
-							<RadioInput
-								type="radio"
-								id="월세"
-								value="월세"
-								disabled={disabled}
-								defaultChecked={contract_type === "월세"}
-								{...register("contract_type")}
-							/>
-						</InputWrapper>
-					)}
+					<InputWrapper>
+						<Label>계약종류</Label>
+						<Label bold={true} htmlFor="전세" width={4}>
+							전세
+						</Label>
+						<RadioInput
+							type="radio"
+							id="전세"
+							value="전세"
+							disabled={disabled}
+							{...register("contract_type")}
+						/>
+						<Label bold={true} htmlFor="월세" width={4}>
+							월세
+						</Label>
+						<RadioInput
+							type="radio"
+							id="월세"
+							value="월세"
+							disabled={disabled}
+							{...register("contract_type")}
+						/>
+					</InputWrapper>
 				</Container>
 				<Container isJustify={true}>
 					<InputWrapper>
