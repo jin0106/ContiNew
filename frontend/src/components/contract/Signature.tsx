@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import ReactSignatureCanvas from "react-signature-canvas";
 
@@ -6,12 +6,12 @@ import { ContractContext } from "src/pages/contract/[id]";
 import styled from "styled-components";
 
 interface Props {
-	signatureDisabled: boolean;
-	from: string;
+	signature: string | undefined;
+	authority: string | undefined;
 }
-function Signature({ signatureDisabled, from }: Props) {
+function Signature({ signature, authority }: Props) {
 	const signCanvas = useRef() as React.MutableRefObject<any>;
-	const { seller_signature, buyer_signature } = useContext(ContractContext);
+	const [signatureDisabled, setSignatureDisabled] = useState(true);
 
 	const { control } = useFormContext();
 
@@ -22,16 +22,25 @@ function Signature({ signatureDisabled, from }: Props) {
 		}
 	};
 
+	const { role, current_level } = useContext(ContractContext);
+
+	useEffect(() => {
+		if (role === authority) {
+			if (role === "seller" && current_level === 3) setSignatureDisabled(false);
+			else if (role === "buyer" && current_level === 2) setSignatureDisabled(false);
+		}
+	}, [role, current_level]);
+
 	return (
 		<div>
 			{signatureDisabled ? (
 				<DisabledCanvas>
-					<img src={from === "sellerInfo" ? seller_signature : buyer_signature} />
+					<img src={signature} />
 				</DisabledCanvas>
 			) : (
 				<>
 					<Controller
-						name={from === "sellerInfo" ? "seller_signature" : "buyer_signature"}
+						name={`${authority}_signature`}
 						control={control}
 						render={({ field }) => (
 							<ReactSignatureCanvas
