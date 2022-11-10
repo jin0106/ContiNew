@@ -25,13 +25,13 @@ function Contract() {
 
 	const [contract, setContract] = useState<ContractType>({});
 	const { current_level: step, role } = contract;
+	const loginId = useSelector((state: RootState) => state.userInfo.login_id);
 
 	useEffect(() => {
 		getContractInfo();
 	}, []);
 
 	const getContractInfo = async () => {
-		const loginId = useSelector((state: RootState) => state.userInfo.login_id);
 		const res = await contractApi.getContract(value);
 		if (res.status) {
 			if (sellerId === loginId) setContract({ ...res.data, role: "seller" });
