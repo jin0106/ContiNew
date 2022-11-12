@@ -1,9 +1,9 @@
-import MyContractsForm from "@container/contracts/components/MyContracts";
-import Tabs from "@components/profile/Tabs";
+import Tabs from "@components/Tabs";
 import styled from "styled-components";
-import useMyContractsList from "@container/contracts/hooks/useMyContractsList";
+import useMyContractsList from "@container/contracts/hooks/useMyContracts";
+import MyContractsList from "@container/contracts/components/MyContractsList";
 
-function MyContractsList() {
+function MyContracts() {
 	const {
 		accessToken,
 		setCurrentTab,
@@ -17,7 +17,7 @@ function MyContractsList() {
 	return accessToken ? (
 		<Container>
 			<Tabs setCurrentTab={setCurrentTab} tabs={tabs} />
-			<MyContractsForm
+			<MyContractsList
 				contracts={currentTab === 0 ? onGoingContracts : completedContracts}
 				currentTab={currentTab}
 			/>
@@ -31,4 +31,4 @@ const Container = styled.div`
 	width: 60%;
 	margin: 5rem auto;
 `;
-export default MyContractsList;
+export default MyContracts;

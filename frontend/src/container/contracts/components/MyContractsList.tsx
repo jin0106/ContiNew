@@ -1,23 +1,15 @@
-import { useRouter } from "next/router";
 import { MyContracts } from "src/types/MyContracts";
 import styled from "styled-components";
+import useMyContractsList from "../hooks/useMyContractsList";
 
 interface Props {
 	contracts: MyContracts[] | undefined;
 	currentTab: number;
 }
 
-function MyContractsForm({ contracts, currentTab }: Props) {
-	const router = useRouter();
-	const handleMyContractClick = (articleId: number, sellerId: string, buyerId: string) => {
-		router.push(
-			{
-				pathname: `/contract/${articleId}`,
-				query: { buyerId, sellerId, articleId },
-			},
-			`/contract/${articleId}`,
-		);
-	};
+function MyContractsList({ contracts, currentTab }: Props) {
+	const { handleContractItemClick } = useMyContractsList();
+
 	return (
 		<div>
 			{contracts && contracts.length > 0 ? (
@@ -25,9 +17,9 @@ function MyContractsForm({ contracts, currentTab }: Props) {
 					{contracts.map((contract, idx) => (
 						<MyContractItem
 							key={idx}
-							onClick={() => {
-								handleMyContractClick(contract.house_id, contract.seller_id, contract.buyer_id);
-							}}
+							onClick={() =>
+								handleContractItemClick(contract.house_id, contract.seller_id, contract.buyer_id)
+							}
 						>
 							<Img src={contract.house_image} />
 							<DescriptionBox>
@@ -112,4 +104,4 @@ const Text = styled.p`
 	text-align: center;
 	margin-top: 20rem;
 `;
-export default MyContractsForm;
+export default MyContractsList;

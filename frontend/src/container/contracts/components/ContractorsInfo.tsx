@@ -1,5 +1,5 @@
 import { Section } from "@components/contract/Section";
-import useContractorsInfo from "@hooks/useContractorsInfo";
+import useContractorsInfo from "@container/contracts/hooks/useContractorsInfo";
 import ContractorInfo from "./ContractorInfo";
 
 function ContractorsInfo() {
