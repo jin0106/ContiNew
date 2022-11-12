@@ -6,9 +6,10 @@ import { ContractContext } from "src/pages/contract/[id]";
 import styled from "styled-components";
 
 interface Props {
-	signature: string | undefined;
-	authority: string | undefined;
+	signature?: string;
+	authority?: string;
 }
+
 function Signature({ signature, authority }: Props) {
 	const signCanvas = useRef() as React.MutableRefObject<any>;
 	const [signatureDisabled, setSignatureDisabled] = useState(true);

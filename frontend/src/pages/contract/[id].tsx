@@ -6,7 +6,7 @@ import { useForm, FormProvider } from "react-hook-form";
 
 import contractApi from "src/api/contract";
 
-import ContractForm from "@components/contract/ContractForm";
+import ContractForm from "@container/contracts/components/ContractForm";
 
 import { RootState } from "src/store";
 import { ContractType } from "src/types/contractType";

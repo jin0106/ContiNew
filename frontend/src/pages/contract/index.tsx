@@ -1,4 +1,4 @@
-import MyContractsForm from "@components/contract/MyContracts";
+import MyContractsForm from "@container/contracts/components/MyContracts";
 import { useEffect, useState } from "react";
 import { contractApi } from "src/api";
 import { MyContracts } from "src/types/MyContracts";

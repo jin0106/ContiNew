@@ -1,13 +1,12 @@
 import { useContext } from "react";
 import { useFormContext } from "react-hook-form";
 
-import { Input } from "./Input";
-import { Label } from "./Label";
-import { Section } from "./Section";
-import { Unit } from "./Unit";
-
 import { ContractContext } from "src/pages/contract/[id]";
 import styled from "styled-components";
+import { Input } from "@components/contract/Input";
+import { Section } from "@components/contract/Section";
+import { Label } from "@components/contract/Label";
+import { Unit } from "@components/contract/Unit";
 interface Props {
 	disabled: boolean;
 }

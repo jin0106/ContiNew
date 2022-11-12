@@ -1,6 +1,6 @@
-import { Section } from "./Section";
+import { Section } from "@components/contract/Section";
+import useContractorsInfo from "@hooks/useContractorsInfo";
 import ContractorInfo from "./ContractorInfo";
-import useContractorsInfo from "../../hooks/useContractorsInfo";
 
 function ContractorsInfo() {
 	const {

@@ -2,8 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { ContractContext } from "src/pages/contract/[id]";
 
-import { Input } from "./Input";
-import { Label } from "./Label";
+import { Input } from "@components/contract/Input";
+import { Label } from "@components/contract/Label";
 import { InputWrapper, Container } from "./SaleInfo";
 import Signature from "./Signature";
 
