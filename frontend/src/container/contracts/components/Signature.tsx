@@ -1,9 +1,8 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import ReactSignatureCanvas from "react-signature-canvas";
 
-import { ContractContext } from "src/pages/contract/[id]";
 import styled from "styled-components";
+import useSignature from "../hooks/useSignature";
 
 interface Props {
 	signature?: string;
@@ -11,26 +10,7 @@ interface Props {
 }
 
 function Signature({ signature, authority }: Props) {
-	const signCanvas = useRef() as React.MutableRefObject<any>;
-	const [signatureDisabled, setSignatureDisabled] = useState(true);
-
-	const { control } = useFormContext();
-
-	const formatIntoPng = () => {
-		if (signCanvas.current) {
-			const dataURL = signCanvas.current.toDataURL("image/png");
-			return dataURL;
-		}
-	};
-
-	const { role, current_level } = useContext(ContractContext);
-
-	useEffect(() => {
-		if (role === authority) {
-			if (role === "seller" && current_level === 3) setSignatureDisabled(false);
-			else if (role === "buyer" && current_level === 2) setSignatureDisabled(false);
-		}
-	}, [role, current_level]);
+	const { signatureDisabled, control, signCanvas, formatIntoPng } = useSignature(authority);
 
 	return (
 		<div>
