@@ -1,22 +1,13 @@
-import { useContext, useEffect, useState } from "react";
-
 import { Header } from "@components/account/Header";
 import ContractInfo from "./ContractInfo";
 import ContractorsInfo from "./ContractorsInfo";
 import SaleInfo from "./SaleInfo";
 
-import { ContractContext } from "src/pages/contract/[id]";
 import styled from "styled-components";
+import useContractForm from "../hooks/useContractForm";
 
 function ContractForm() {
-	const [disabled, setDisabled] = useState(true);
-	const { current_level, role } = useContext(ContractContext);
-
-	useEffect(() => {
-		if (current_level === 1 && role === "seller") {
-			setDisabled(false);
-		}
-	}, [current_level]);
+	const { disabled } = useContractForm();
 
 	return (
 		<Container>
