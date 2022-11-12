@@ -1,4 +1,4 @@
-import { Section } from "@components/contract/Section";
+import { Section } from "./Section";
 import useContractorsInfo from "@container/contracts/hooks/useContractorsInfo";
 import ContractorInfo from "./ContractorInfo";
 

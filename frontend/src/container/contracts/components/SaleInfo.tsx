@@ -3,10 +3,10 @@ import { useFormContext } from "react-hook-form";
 
 import { ContractContext } from "src/pages/contract/[id]";
 import styled from "styled-components";
-import { Input } from "@components/contract/Input";
-import { Section } from "@components/contract/Section";
-import { Label } from "@components/contract/Label";
-import { Unit } from "@components/contract/Unit";
+import { Input } from "@container/contracts/components/Input";
+import { Section } from "./Section";
+import { Label } from "./Label";
+import { Unit } from "./Unit";
 interface Props {
 	disabled: boolean;
 }

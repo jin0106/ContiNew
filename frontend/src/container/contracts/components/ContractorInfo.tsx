@@ -2,10 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { ContractContext } from "src/pages/contract/[id]";
 
-import { Input } from "@components/contract/Input";
-import { Label } from "@components/contract/Label";
+import { Input } from "./Input";
 import { InputWrapper, Container } from "./SaleInfo";
 import Signature from "./Signature";
+import { Label } from "./Label";
 
 interface Props {
 	authority: string | undefined;

@@ -5,10 +5,10 @@ import ContractTerms from "./ContractTerms";
 import { InputWrapper, Container } from "./SaleInfo";
 
 import { ContractContext } from "src/pages/contract/[id]";
-import { Section } from "@components/contract/Section";
-import { Label } from "@components/contract/Label";
-import { Input, RadioInput } from "@components/contract/Input";
-import { Unit } from "@components/contract/Unit";
+import { Section } from "./Section";
+import { Label } from "./Label";
+import { Input, RadioInput } from "@container/contracts/components/Input";
+import { Unit } from "./Unit";
 interface Props {
 	disabled: boolean;
 }
