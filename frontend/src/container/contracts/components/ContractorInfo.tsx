@@ -1,11 +1,8 @@
-import { useContext, useEffect, useState } from "react";
-import { useFormContext } from "react-hook-form";
-import { ContractContext } from "src/pages/contract/[id]";
-
 import { Input } from "./Input";
 import { InputWrapper, Container } from "./SaleInfo";
 import Signature from "./Signature";
 import { Label } from "./Label";
+import useContractorInfo from "../hooks/useContractorInfo";
 
 interface Props {
 	authority: string | undefined;
@@ -26,20 +23,7 @@ function ContractorInfo({
 	koreanAuthority,
 	signature,
 }: Props) {
-	const { register } = useFormContext();
-	const { role, current_level } = useContext(ContractContext);
-	const [disabled, setDisabled] = useState(true);
-
-	useEffect(() => {
-		if (role === authority) {
-			if (current_level === 1 && role === "seller") {
-				setDisabled(false);
-			}
-			if (current_level === 2 && role === "buyer") {
-				setDisabled(false);
-			}
-		}
-	}, [role, current_level]);
+	const { disabled, register } = useContractorInfo(authority);
 
 	return (
 		<>
