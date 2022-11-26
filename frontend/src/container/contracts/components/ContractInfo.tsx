@@ -2,13 +2,13 @@ import { useContext } from "react";
 import { useFormContext } from "react-hook-form";
 
 import ContractTerms from "./ContractTerms";
-import { Input, RadioInput } from "./Input";
-import { Label } from "./Label";
 import { InputWrapper, Container } from "./SaleInfo";
-import { Unit } from "./Unit";
-import { Section } from "./Section";
 
 import { ContractContext } from "src/pages/contract/[id]";
+import { Section } from "./Section";
+import { Label } from "./Label";
+import { Input, RadioInput } from "@container/contracts/components/Input";
+import { Unit } from "./Unit";
 interface Props {
 	disabled: boolean;
 }

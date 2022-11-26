@@ -1,6 +1,6 @@
 import { Section } from "./Section";
+import useContractorsInfo from "@container/contracts/hooks/useContractorsInfo";
 import ContractorInfo from "./ContractorInfo";
-import useContractorsInfo from "../../hooks/useContractorsInfo";
 
 function ContractorsInfo() {
 	const {

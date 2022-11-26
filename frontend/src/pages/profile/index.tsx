@@ -1,5 +1,5 @@
 import Favorites from "@components/profile/Bookmarks";
-import Tabs from "@components/profile/Tabs";
+import Tabs from "@components/Tabs";
 import UserInfo from "@components/profile/UserInfo";
 import { useState } from "react";
 import MyArticle from "@components/profile/MyArticle";
